@@ -23,7 +23,7 @@ def test_if_dxy_generator(n):
     
     # generate connected graph with cyclic Jacobian 
     while not G.is_connected() or snf[-2, -2] != 1:
-        G = graphs.RandomGNP(n,.5)
+        G = graphs.RandomGNP(n,p)
         L = np.array(G.laplacian_matrix())
         redL = matrix(minor(L, 0))
         snf, P, _ = redL.smith_form()
@@ -56,13 +56,16 @@ def test_if_dxy_generator(n):
         if existsxy == 1:
         	break
 
+    # commented out: a hacky way to check chance of random element being a generator
+    #existsxy = euler_phi(a) / a
+
     return [existsxy, fixedxy]
     
 
 # Test Conjecture that if G is biconnected then exponent(Jac(G)) >= n
 def test_dxy_order_n(n):
     set_random_seed()
-    p = .5
+    p = .1
     G = graphs.RandomGNP(n,p)
     L = np.array(G.laplacian_matrix())
     redL = matrix(minor(L, 0))
@@ -103,12 +106,13 @@ if __name__ == "__main__":
 	p = Pool(6)
 	
 	# values of n to loop over
-	n_vals = [5, 10, 20, 40]
+	n_vals = [20, 40, 60]
 
 	# number of trials to conduct for each n
-	trials = 100000
+	trials = 10000
 
 	with open('jacobians_results.txt', 'w') as f:
+		f.write("p = .5\n")
 		for n in n_vals:
 			t1 = time()
 			# conduct trials
